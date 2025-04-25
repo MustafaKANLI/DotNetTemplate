@@ -1,4 +1,4 @@
-using DotNetTemplate.Application.DTOs;
+using DotNetTemplate.Infrastructure.DTOs;
 using DotNetTemplate.Domain.Entities;
 using Mapster;
 

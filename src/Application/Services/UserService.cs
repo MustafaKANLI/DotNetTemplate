@@ -1,39 +1,47 @@
-using DotNetTemplate.Application.DTOs;
-using DotNetTemplate.Infrastructure.Interfaces;
+using DotNetTemplate.Infrastructure.DTOs;
 using DotNetTemplate.Domain.Entities;
 using DotNetTemplate.Application.Common;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Mapster;
+using MediatR;
+using DotNetTemplate.Infrastructure.Repositories.Interfaces;
+using DotNetTemplate.Application.Services.Interfaces;
+using DotNetTemplate.Infrastructure.Identity;
 
 namespace DotNetTemplate.Application.Services;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IMapper _mapper;
 
-    public UserService(IUserRepository userRepository, IMapper mapper)
+    public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
-        _mapper = mapper;
     }
 
-    public async Task<UserDto?> GetByIdAsync(Guid id)
+    public async Task<Response<UserDto?>> GetByIdAsync(Guid id)
     {
         var user = await _userRepository.GetByIdAsync(id);
-        return user == null ? null : _mapper.Map<UserDto>(user);
+        if (user == null) return new Response<UserDto?>("User not found.");
+        return new Response<UserDto>(user.Adapt<UserDto>(), "Succeeded.");
     }
 
-    public async Task<IEnumerable<UserDto>> GetAllAsync()
+    public async Task<Response<IEnumerable<UserDto>>> GetAllAsync()
     {
         var users = await _userRepository.GetAllAsync();
-        return _mapper.Map<List<UserDto>>(users);
+        if (users == null || !users.Any()) return new Response<IEnumerable<UserDto>>("No users found.");
+        return new Response<IEnumerable<UserDto>>(users.Adapt<List<UserDto>>(), "Succeeded.");
     }
 
-    public async Task<UserDto> CreateAsync(CreateUserDto dto)
+    public async Task<Response<UserDto>> CreateAsync(CreateUserDto dto)
     {
-        var user = _mapper.Map<User>(dto);
+        var user = dto.Adapt<User>();
+
+        var helper = new PasswordHasherHelper();
+        user.PWHash = Convert.FromBase64String(helper.HashPassword(dto.Password));
+
         await _userRepository.AddAsync(user);
-        return _mapper.Map<UserDto>(user);
+        return new Response<UserDto>(user.Adapt<UserDto>(), "Succeeded.");
     }
 }

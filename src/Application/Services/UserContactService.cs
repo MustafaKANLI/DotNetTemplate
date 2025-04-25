@@ -1,37 +1,43 @@
-using DotNetTemplate.Application.DTOs;
-using DotNetTemplate.Infrastructure.Interfaces;
+using DotNetTemplate.Infrastructure.DTOs;
 using DotNetTemplate.Domain.Entities;
 using DotNetTemplate.Application.Common;
+using DotNetTemplate.Application.Services.Interfaces;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using Mapster;
+using MediatR;
+using DotNetTemplate.Infrastructure.Repositories.Interfaces;
 
 namespace DotNetTemplate.Application.Services;
 
 public class UserContactService : IUserContactService
 {
     private readonly IUserContactRepository _userContactRepository;
-    private readonly IMapper _mapper;
 
-    public UserContactService(IUserContactRepository userContactRepository, IMapper mapper)
+    public UserContactService(IUserContactRepository userContactRepository)
     {
         _userContactRepository = userContactRepository;
-        _mapper = mapper;
     }
 
-    public async Task<UserContactDto?> GetByIdAsync(Guid id)
+    public async Task<Response<UserContactDto?>> GetByIdAsync(Guid id)
     {
         var contact = await _userContactRepository.GetByIdAsync(id);
-        return contact == null ? null : _mapper.Map<UserContactDto>(contact);
+        if (contact == null) return new Response<UserContactDto?>("User contact not found.");
+        return new Response<UserContactDto?>(contact.Adapt<UserContactDto>(), "Succeeded.");
     }
 
-    public async Task<IEnumerable<UserContactDto>> GetByUserIdAsync(Guid userId)
+    public async Task<Response<IEnumerable<UserContactDto>>> GetByUserIdAsync(Guid userId)
     {
         var contacts = await _userContactRepository.GetByUserIdAsync(userId);
-        return _mapper.Map<List<UserContactDto>>(contacts);
+        if (contacts == null || !contacts.Any()) return new Response<IEnumerable<UserContactDto>>("No user contacts found.");
+        return new Response<IEnumerable<UserContactDto>>(contacts.Adapt<List<UserContactDto>>(), "Succeeded.");
     }
 
-    public async Task<UserContactDto> CreateAsync(CreateUserContactDto dto)
+    public async Task<Response<UserContactDto>> CreateAsync(CreateUserContactDto dto)
     {
-        var contact = _mapper.Map<UserContact>(dto);
+        var contact = dto.Adapt<UserContact>();
         await _userContactRepository.AddAsync(contact);
-        return _mapper.Map<UserContactDto>(contact);
+        return new Response<UserContactDto>(contact.Adapt<UserContactDto>(), "Succeeded.");
     }
 }

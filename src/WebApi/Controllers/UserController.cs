@@ -1,5 +1,5 @@
-using DotNetTemplate.Application.DTOs;
-using DotNetTemplate.Infrastructure.Interfaces;
+using DotNetTemplate.Infrastructure.DTOs;
+using DotNetTemplate.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +21,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var users = await _userService.GetAllAsync();
-        return Ok(users);
+        return CreatedAtAction(nameof(GetAll), users);
     }
 
     [HttpGet("{id}")]
@@ -29,7 +29,7 @@ public class UserController : ControllerBase
     {
         var user = await _userService.GetByIdAsync(id);
         if (user == null) return NotFound();
-        return Ok(user);
+        return CreatedAtAction(nameof(GetById), new { id }, user);
     }
 
     [HttpPost]
@@ -37,6 +37,6 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
     {
         var user = await _userService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+        return CreatedAtAction(nameof(GetById), new { id = user.Data.Id }, user);
     }
 }

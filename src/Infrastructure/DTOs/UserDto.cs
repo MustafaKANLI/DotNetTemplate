@@ -1,4 +1,4 @@
-namespace DotNetTemplate.Application.DTOs;
+namespace DotNetTemplate.Infrastructure.DTOs;
 
 public class UserDto
 {

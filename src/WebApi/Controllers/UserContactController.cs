@@ -1,5 +1,5 @@
-using DotNetTemplate.Application.DTOs;
-using DotNetTemplate.Application.Interfaces;
+using DotNetTemplate.Infrastructure.DTOs;
+using DotNetTemplate.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,20 +22,20 @@ public class UserContactController : ControllerBase
     {
         var contact = await _userContactService.GetByIdAsync(id);
         if (contact == null) return NotFound();
-        return Ok(contact);
+        return CreatedAtAction(nameof(GetById), new { id = contact.Data.Id }, contact);
     }
 
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetByUserId(Guid userId)
     {
         var contacts = await _userContactService.GetByUserIdAsync(userId);
-        return Ok(contacts);
+        return CreatedAtAction(nameof(GetByUserId), new { userId }, contacts);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserContactDto dto)
     {
         var contact = await _userContactService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = contact.Id }, contact);
+        return CreatedAtAction(nameof(GetById), new { id = contact.Data.Id }, contact);
     }
 }

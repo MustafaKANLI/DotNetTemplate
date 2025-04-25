@@ -1,11 +1,12 @@
-using DotNetTemplate.Application.DTOs;
-using DotNetTemplate.Infrastructure.Interfaces;
+using DotNetTemplate.Infrastructure.DTOs;
+using DotNetTemplate.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Mapster;
 
 namespace DotNetTemplate.WebApi.Controllers;
 
@@ -28,21 +29,21 @@ public class AuthController : ControllerBase
     {
         var user = await _authService.AuthenticateAsync(dto);
         if (user == null) return Unauthorized();
-        var token = GenerateJwtToken(user);
-        return Ok(new { token });
+        var token = GenerateJwtToken(user.Adapt<UserDto>());
+        return CreatedAtAction(nameof(Login), new { token }, user);
     }
 
     private string GenerateJwtToken(UserDto user)
     {
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
-        };
+        //var claims = new[]
+        //{
+        //    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        //    new Claim(ClaimTypes.Name, user.Username)
+        //};
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? "supersecretkey"));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
-            claims: claims,
+            //claims: claims,
             expires: DateTime.Now.AddDays(7),
             signingCredentials: creds);
         return new JwtSecurityTokenHandler().WriteToken(token);

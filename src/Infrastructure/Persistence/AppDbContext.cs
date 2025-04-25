@@ -12,11 +12,14 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        foreach (var property in modelBuilder.Model.GetEntityTypes()
+           .SelectMany(t => t.GetProperties())
+           .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
+        {
+            property.SetPrecision(18); // Replaced SetColumnType with SetPrecision  
+            property.SetScale(6);      // Added SetScale for decimal scale  
+        }
+
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.Contacts)
-            .WithOne(c => c.User)
-            .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
