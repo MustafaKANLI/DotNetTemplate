@@ -2,9 +2,7 @@ using DotNetTemplate.Infrastructure.DTOs;
 using DotNetTemplate.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using DotNetTemplate.Infrastructure.Identity;
 using System.Text;
 using Mapster;
 
@@ -16,36 +14,35 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IConfiguration _config;
+    private readonly JwtHelper _jwtHelper;
+    private readonly IClaimService _claimService;
 
-    public AuthController(IAuthService authService, IConfiguration config)
+    public AuthController(IAuthService authService, IConfiguration config, JwtHelper jwtHelper, IClaimService claimService)
     {
         _authService = authService;
         _config = config;
+        _jwtHelper = jwtHelper;
+        _claimService = claimService;
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] LoginDto dto)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
     {
         var user = await _authService.AuthenticateAsync(dto);
         if (user == null) return Unauthorized();
-        var token = GenerateJwtToken(user.Adapt<UserDto>());
-        return CreatedAtAction(nameof(Login), new { token }, user);
+        var claims = await _claimService.GetClaimsByUserIdAsync(user.Data.Id);
+        if (claims.Data == null || !claims.Data.Any()) return CreatedAtAction(nameof(Login), null, "No claims found for user.");
+        var token = _jwtHelper.GenerateJwtToken(user.Data.Adapt<UserDto>(), claims.Data);
+
+        var response = new LoginResponseDto
+        {
+            Token = token,
+            Expiration = _jwtHelper.GetTokenExpiration(token),
+            User = user.Data.Adapt<UserDto>()
+        };
+
+        return CreatedAtAction(nameof(Login), new { token }, response);
     }
 
-    private string GenerateJwtToken(UserDto user)
-    {
-        //var claims = new[]
-        //{
-        //    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        //    new Claim(ClaimTypes.Name, user.Username)
-        //};
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? "supersecretkey"));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var token = new JwtSecurityToken(
-            //claims: claims,
-            expires: DateTime.Now.AddDays(7),
-            signingCredentials: creds);
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
 }

@@ -18,25 +18,25 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAll()
     {
-        var users = await _userService.GetAllAsync();
-        return CreatedAtAction(nameof(GetAll), users);
+        var result = await _userService.GetAllAsync();
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var user = await _userService.GetByIdAsync(id);
-        if (user == null) return NotFound();
-        return CreatedAtAction(nameof(GetById), new { id }, user);
+        var result = await _userService.GetByIdAsync(id);
+        return Ok(result);
     }
 
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
     {
-        var user = await _userService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = user.Data.Id }, user);
+        var result = await _userService.CreateAsync(dto);
+        return Ok(result);
     }
 }

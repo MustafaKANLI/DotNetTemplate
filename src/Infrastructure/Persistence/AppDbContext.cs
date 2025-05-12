@@ -1,5 +1,6 @@
 using DotNetTemplate.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace DotNetTemplate.Infrastructure.Persistence;
 
@@ -9,7 +10,7 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<UserContact> UserContacts => Set<UserContact>();
-
+    public DbSet<Claim> Claims => Set<Claim>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         foreach (var property in modelBuilder.Model.GetEntityTypes()
@@ -22,4 +23,5 @@ public class AppDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+
 }

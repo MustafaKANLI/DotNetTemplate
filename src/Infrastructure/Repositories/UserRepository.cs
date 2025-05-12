@@ -7,9 +7,9 @@ namespace DotNetTemplate.Infrastructure.Repositories;
 
 public class UserRepository : GenericRepository<User>, IUserRepository
 {
-    private readonly AppDbContext _db;
-    public UserRepository(AppDbContext db) : base(db) { _db = db; }
+    private readonly AppDbContext _context;
+    public UserRepository(AppDbContext context) : base(context) { _context = context; }
 
     public async Task<User?> GetByUsernameAsync(string username)
-        => await _db.Users.Include(u => u.Contacts).FirstOrDefaultAsync(u => u.Username == username);
+        => await _context.Users.Include(u => u.Contacts).FirstOrDefaultAsync(u => u.Username == username);
 }

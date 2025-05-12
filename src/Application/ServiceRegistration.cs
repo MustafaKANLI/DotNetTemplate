@@ -20,10 +20,13 @@ public static class ServiceRegistration
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserContactService, UserContactService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IClaimService, ClaimService>();
+        services.AddScoped<IClaimRepository, ClaimRepository>();
         services.AddScoped<IPasswordHasherHelper, PasswordHasherHelper>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserContactRepository, UserContactRepository>();
+        services.AddScoped<JwtHelper>();
         return services;
     }
 }

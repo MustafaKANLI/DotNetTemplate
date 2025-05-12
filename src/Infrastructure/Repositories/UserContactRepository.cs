@@ -7,9 +7,9 @@ namespace DotNetTemplate.Infrastructure.Repositories;
 
 public class UserContactRepository : GenericRepository<UserContact>, IUserContactRepository
 {
-    private readonly AppDbContext _db;
-    public UserContactRepository(AppDbContext db) : base(db) { _db = db; }
+    private readonly AppDbContext _context;
+    public UserContactRepository(AppDbContext context) : base(context) { _context = context; }
 
     public async Task<IEnumerable<UserContact>> GetByUserIdAsync(Guid userId)
-        => await _db.UserContacts.Where(c => c.UserId == userId).ToListAsync();
+        => await _context.UserContacts.Where(c => c.UserId == userId).ToListAsync();
 }

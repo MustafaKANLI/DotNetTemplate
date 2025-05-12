@@ -6,6 +6,7 @@ using DotNetTemplate.Application.Common;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using DotNetTemplate.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,7 +79,6 @@ if (app.Environment.IsDevelopment())
         c.DocExpansion(DocExpansion.None);
     });
 }
-
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

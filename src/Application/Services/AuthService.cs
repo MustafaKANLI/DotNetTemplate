@@ -20,7 +20,7 @@ public class AuthService : IAuthService
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<Response<UserDto?>> AuthenticateAsync(LoginDto dto)
+    public async Task<Response<UserDto?>> AuthenticateAsync(LoginRequestDto dto)
     {
         var user = await _userRepository.GetByUsernameAsync(dto.Username);
         if (user == null) return null;
