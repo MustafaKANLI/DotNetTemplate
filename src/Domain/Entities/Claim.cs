@@ -6,4 +6,7 @@ public class Claim
     public Guid UserId { get; set; }
     public string Type { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
+
+    public User? User { get; set; }
+
 }

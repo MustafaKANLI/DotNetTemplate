@@ -23,7 +23,7 @@ public class AuthService : IAuthService
     public async Task<Response<UserDto?>> AuthenticateAsync(LoginRequestDto dto)
     {
         var user = await _userRepository.GetByUsernameAsync(dto.Username);
-        if (user == null) return null;
+        if (user == null) throw new UnauthorizedAccessException("Invalid username or password.");
         var result = _passwordHasher.VerifyPassword(Convert.ToBase64String(user.PWHash), dto.Password);
         if (result)
         {
