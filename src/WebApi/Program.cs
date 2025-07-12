@@ -38,7 +38,17 @@ builder.Services.AddSwaggerGen(c =>
                         }
                     });
 });
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
+var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
+var dbProvider = builder.Configuration.GetValue<string>("DatabaseProvider");
+
+string connectionString = dbProvider switch
+{
+    "MSSQL" => builder.Configuration.GetConnectionString("MSSQL"),
+    "PostgreSQL" => builder.Configuration.GetConnectionString("PostgreSQL"),
+    _ => throw new Exception("DatabaseProvider must be MSSQL or PostgreSQL")
+};
+
+builder.Services.AddInfrastructure(connectionString, useInMemory);
 
 // JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "supersecretkey";

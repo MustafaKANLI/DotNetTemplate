@@ -13,10 +13,18 @@ namespace DotNetTemplate.Infrastructure;
 
 public static class ServiceRegistration
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString, bool useInMemory = false)
     {
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseInMemoryDatabase("DotNetTemplateDb")); // Geliştirme için InMemory, prod için connectionString kullanılabilir
+        if (useInMemory)
+        {
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseInMemoryDatabase("DotNetTemplateDb"));
+        }
+        else
+        {
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(connectionString));
+        }
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserContactService, UserContactService>();
         services.AddScoped<IAuthService, AuthService>();
