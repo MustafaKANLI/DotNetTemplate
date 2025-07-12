@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   webapi:
     build:
@@ -11,6 +12,7 @@ services:
     depends_on:
       - mssql
       - postgres
+
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql-container
@@ -19,6 +21,9 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=YourStrongPassword123
+    volumes:
+      - mssql-data:/var/opt/mssql
+
   postgres:
     image: postgres:latest
     container_name: postgres-container
@@ -28,3 +33,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=YourStrongPassword123
       - POSTGRES_DB=DotNetTemplateDb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  mssql-data:
+  postgres-data:
