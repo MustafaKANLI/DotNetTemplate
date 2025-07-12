@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+*.md
+*.user
+*.vs
+.vscode
+docker-compose*
+.git
+.gitignore
+packages-microsoft-prod.deb
