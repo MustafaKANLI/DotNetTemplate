@@ -9,7 +9,7 @@ namespace DotNetTemplate.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-// [Authorize]
+//[Authorize]
 public class ClaimController : ControllerBase
 {
     private readonly IClaimService _claimService;
@@ -19,6 +19,7 @@ public class ClaimController : ControllerBase
         _claimService = claimService;
     }
 
+    [Authorize(Policy = "AdminGetAccess")]
     [HttpGet()]
     public async Task<IActionResult> GetClaimsByUserId(Guid userId)
     {

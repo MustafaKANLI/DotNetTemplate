@@ -6,6 +6,7 @@ using DotNetTemplate.Infrastructure.Identity;
 using Mapster;
 using MediatR;
 using DotNetTemplate.Application.Services.Interfaces;
+using DotNetTemplate.Infrastructure.Identity.Interfaces;
 
 namespace DotNetTemplate.Application.Services;
 

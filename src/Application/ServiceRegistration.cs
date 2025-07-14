@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using DotNetTemplate.Domain.Entities;
 using DotNetTemplate.Infrastructure.Identity;
+using DotNetTemplate.Infrastructure.Identity.Interfaces;
 
 namespace DotNetTemplate.Infrastructure;
 
@@ -34,7 +35,12 @@ public static class ServiceRegistration
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserContactRepository, UserContactRepository>();
-        services.AddScoped<JwtHelper>();
+        services.AddScoped<IJwtHelper, JwtHelper>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ITokenHashHelper, TokenHashHelper>();
+
+
         return services;
     }
 }

@@ -1,12 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using DotNetTemplate.Infrastructure.Identity.Interfaces;
 
 namespace DotNetTemplate.Infrastructure.Identity;
-
-public interface IPasswordHasherHelper
-{
-    string HashPassword(string password);
-    bool VerifyPassword(string hashedPassword, string providedPassword);
-}
 
 public class PasswordHasherHelper : IPasswordHasherHelper
 {
@@ -20,4 +15,5 @@ public class PasswordHasherHelper : IPasswordHasherHelper
         var result = _hasher.VerifyHashedPassword(null!, hashedPassword, providedPassword);
         return result == PasswordVerificationResult.Success;
     }
+
 }

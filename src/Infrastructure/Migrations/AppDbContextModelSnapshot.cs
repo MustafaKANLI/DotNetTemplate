@@ -41,7 +41,48 @@ namespace DotNetTemplate.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Claims");
+                });
+
+            modelBuilder.Entity("DotNetTemplate.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByIp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReplacedByTokenId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RevokedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("DotNetTemplate.Domain.Entities.User", b =>
@@ -111,6 +152,28 @@ namespace DotNetTemplate.Infrastructure.Migrations
                     b.ToTable("UserContacts");
                 });
 
+            modelBuilder.Entity("DotNetTemplate.Domain.Entities.Claim", b =>
+                {
+                    b.HasOne("DotNetTemplate.Domain.Entities.User", "User")
+                        .WithMany("Claims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DotNetTemplate.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("DotNetTemplate.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DotNetTemplate.Domain.Entities.UserContact", b =>
                 {
                     b.HasOne("DotNetTemplate.Domain.Entities.User", "User")
@@ -124,6 +187,8 @@ namespace DotNetTemplate.Infrastructure.Migrations
 
             modelBuilder.Entity("DotNetTemplate.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Claims");
+
                     b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618

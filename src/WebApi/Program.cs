@@ -64,9 +64,28 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"JWT failed: {context.Exception}");
+            return Task.CompletedTask;
+        }
     };
 });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminGetAccess", policy =>
+        {
+            policy.RequireAssertion(context =>
+                context.User.HasClaim(c => c.Type == "admin" && c.Value == "get"));
+        });
+});
+
 
 builder.Services.AddCors(options =>
 {

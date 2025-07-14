@@ -1,4 +1,5 @@
 using DotNetTemplate.Infrastructure.DTOs;
+using DotNetTemplate.Infrastructure.Identity.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace DotNetTemplate.Infrastructure.Identity;
 
-public class JwtHelper
+public class JwtHelper : IJwtHelper
 {
     private readonly IConfiguration _config;
 
