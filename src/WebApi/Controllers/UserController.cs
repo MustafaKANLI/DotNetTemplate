@@ -32,6 +32,13 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("getbyusername")]
+    public async Task<IActionResult> GetByUsername(string username)
+    {
+        var result = await _userService.GetByUsernameAsync(username);
+        return Ok(result);
+    }
+
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto)

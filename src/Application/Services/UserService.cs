@@ -44,4 +44,11 @@ public class UserService : IUserService
         await _userRepository.AddAsync(user);
         return new Response<UserDto>(user.Adapt<UserDto>(), "Succeeded.");
     }
+
+    public async Task<Response<UserDto>> GetByUsernameAsync(string username)
+    {
+        var user = await _userRepository.GetByUsernameAsync(username);
+        if (user == null) return new Response<UserDto>("User not found.");
+        return new Response<UserDto>(user.Adapt<UserDto>(), "Succeeded.");
+    }
 }

@@ -11,6 +11,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public UserRepository(AppDbContext context) : base(context) { _context = context; }
 
     public async Task<User?> GetByUsernameAsync(string username)
-        => await _context.Users.Include(u => u.Contacts).FirstOrDefaultAsync(u => u.Username == username);
+    {
+        return await _context.Users
+            .Include(u => u.Contacts)
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Username == username);
+    } 
 
 }
