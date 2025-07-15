@@ -1,3 +1,5 @@
+using DotNetTemplate.Domain.Entities;
+
 namespace DotNetTemplate.Infrastructure.DTOs;
 
 public class UserDto
@@ -7,7 +9,7 @@ public class UserDto
     public string Surname { get; set; } = null!;
     public string Username { get; set; } = null!;
     public List<UserContactDto> Contacts { get; set; } = new();
-    public List<Guid> RoleIds { get; set; } = new();
+    public Role Role { get; set; } = null!;
 }
 
 public class CreateUserDto

@@ -7,7 +7,7 @@ namespace DotNetTemplate.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+//[Authorize]
 public class RoleController : ControllerBase
 {
     private readonly IRoleService _roleService;
@@ -31,7 +31,7 @@ public class RoleController : ControllerBase
         return Ok(result);
     }
 
-    [Authorize(Policy = "AdminGetAccess")]
+    //[Authorize(Policy = "AdminGetAccess")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateRoleDto dto)
     {

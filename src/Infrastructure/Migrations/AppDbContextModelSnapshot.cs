@@ -125,6 +125,9 @@ namespace DotNetTemplate.Infrastructure.Migrations
                     b.Property<byte[]>("PWSalt")
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -134,6 +137,8 @@ namespace DotNetTemplate.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -170,27 +175,6 @@ namespace DotNetTemplate.Infrastructure.Migrations
                     b.ToTable("UserContacts");
                 });
 
-            modelBuilder.Entity("DotNetTemplate.Domain.Entities.UserRole", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserRoles");
-                });
-
             modelBuilder.Entity("DotNetTemplate.Domain.Entities.Claim", b =>
                 {
                     b.HasOne("DotNetTemplate.Domain.Entities.User", "User")
@@ -213,6 +197,17 @@ namespace DotNetTemplate.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DotNetTemplate.Domain.Entities.User", b =>
+                {
+                    b.HasOne("DotNetTemplate.Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("DotNetTemplate.Domain.Entities.UserContact", b =>
                 {
                     b.HasOne("DotNetTemplate.Domain.Entities.User", "User")
@@ -224,37 +219,11 @@ namespace DotNetTemplate.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DotNetTemplate.Domain.Entities.UserRole", b =>
-                {
-                    b.HasOne("DotNetTemplate.Domain.Entities.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DotNetTemplate.Domain.Entities.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DotNetTemplate.Domain.Entities.Role", b =>
-                {
-                    b.Navigation("UserRoles");
-                });
-
             modelBuilder.Entity("DotNetTemplate.Domain.Entities.User", b =>
                 {
                     b.Navigation("Claims");
 
                     b.Navigation("Contacts");
-
-                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }
