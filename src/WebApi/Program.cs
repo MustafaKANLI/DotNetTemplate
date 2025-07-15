@@ -67,14 +67,6 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
         ClockSkew = TimeSpan.Zero
     };
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            Console.WriteLine($"JWT failed: {context.Exception}");
-            return Task.CompletedTask;
-        }
-    };
 });
 
 builder.Services.AddAuthorization(options =>
