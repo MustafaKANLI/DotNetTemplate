@@ -7,6 +7,7 @@ public class UserDto
     public string Surname { get; set; } = null!;
     public string Username { get; set; } = null!;
     public List<UserContactDto> Contacts { get; set; } = new();
+    public List<Guid> RoleIds { get; set; } = new();
 }
 
 public class CreateUserDto
@@ -15,6 +16,8 @@ public class CreateUserDto
     public string Surname { get; set; } = null!;
     public string Username { get; set; } = null!;
     public string Password { get; set; } = null!;
+    public Guid RoleId { get; set; }
+
 }
 
 

@@ -12,5 +12,6 @@ public class User
     public bool IsLocked { get; set; }
     public ICollection<UserContact> Contacts { get; set; } = new List<UserContact>();
     public ICollection<Claim> Claims { get; set; } = new List<Claim>();
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
 }

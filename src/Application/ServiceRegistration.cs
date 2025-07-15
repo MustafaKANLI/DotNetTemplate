@@ -39,7 +39,8 @@ public static class ServiceRegistration
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ITokenHashHelper, TokenHashHelper>();
-
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IRoleService, RoleService>();
 
         return services;
     }

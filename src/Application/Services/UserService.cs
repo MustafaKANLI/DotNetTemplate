@@ -41,6 +41,12 @@ public class UserService : IUserService
         var helper = new PasswordHasherHelper();
         user.PWHash = Convert.FromBase64String(helper.HashPassword(dto.Password));
 
+        user.UserRoles.Add(new UserRole
+        {
+            UserId = user.Id,
+            RoleId = dto.RoleId
+        });
+
         await _userRepository.AddAsync(user);
         return new Response<UserDto>(user.Adapt<UserDto>(), "Succeeded.");
     }

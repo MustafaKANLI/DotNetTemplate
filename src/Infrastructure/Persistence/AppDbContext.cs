@@ -45,6 +45,8 @@ public class AppDbContext : DbContext
     public DbSet<UserContact> UserContacts => Set<UserContact>();
     public DbSet<Claim> Claims => Set<Claim>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
